@@ -1,0 +1,42 @@
+goos: linux
+goarch: amd64
+pkg: github.com/chmike/varint
+cpu: Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz
+BenchmarkEncode/bits=7-4         	700769550	         1.691 ns/op
+BenchmarkEncode/bits=14-4        	502700923	         2.389 ns/op
+BenchmarkEncode/bits=21-4        	504302845	         2.393 ns/op
+BenchmarkEncode/bits=28-4        	446099416	         2.689 ns/op
+BenchmarkEncode/bits=35-4        	334959806	         3.580 ns/op
+BenchmarkEncode/bits=42-4        	286200204	         4.187 ns/op
+BenchmarkEncode/bits=49-4        	252152347	         4.771 ns/op
+BenchmarkEncode/bits=56-4        	236178100	         5.069 ns/op
+BenchmarkEncode/bits=63-4        	236517376	         5.070 ns/op
+BenchmarkDecode/bits=7-4         	565008814	         2.140 ns/op
+BenchmarkDecode/bits=14-4        	574366490	         2.087 ns/op
+BenchmarkDecode/bits=21-4        	503736230	         2.388 ns/op
+BenchmarkDecode/bits=28-4        	446333842	         2.678 ns/op
+BenchmarkDecode/bits=35-4        	403598298	         2.980 ns/op
+BenchmarkDecode/bits=42-4        	334741538	         3.572 ns/op
+BenchmarkDecode/bits=49-4        	287190154	         4.172 ns/op
+BenchmarkDecode/bits=56-4        	268699330	         4.475 ns/op
+BenchmarkDecode/bits=63-4        	250692082	         4.777 ns/op
+BenchmarkStdEncode/bits=7-4      	844675797	         1.411 ns/op
+BenchmarkStdEncode/bits=14-4     	497805558	         2.394 ns/op
+BenchmarkStdEncode/bits=21-4     	444312193	         2.690 ns/op
+BenchmarkStdEncode/bits=28-4     	287736889	         4.173 ns/op
+BenchmarkStdEncode/bits=35-4     	268551206	         4.474 ns/op
+BenchmarkStdEncode/bits=42-4     	284706489	         4.248 ns/op
+BenchmarkStdEncode/bits=49-4     	237181906	         5.064 ns/op
+BenchmarkStdEncode/bits=56-4     	222909400	         5.375 ns/op
+BenchmarkStdEncode/bits=63-4     	201252766	         5.972 ns/op
+BenchmarkStdDecode/bits=7-4      	444905188	         2.703 ns/op
+BenchmarkStdDecode/bits=14-4     	278213490	         4.342 ns/op
+BenchmarkStdDecode/bits=21-4     	228672177	         5.236 ns/op
+BenchmarkStdDecode/bits=28-4     	182855704	         6.555 ns/op
+BenchmarkStdDecode/bits=35-4     	154768280	         7.750 ns/op
+BenchmarkStdDecode/bits=42-4     	133617573	         8.942 ns/op
+BenchmarkStdDecode/bits=49-4     	100000000	        10.29 ns/op
+BenchmarkStdDecode/bits=56-4     	100000000	        11.62 ns/op
+BenchmarkStdDecode/bits=63-4     	92271188	        12.81 ns/op
+PASS
+ok  	github.com/chmike/varint	56.442s
