@@ -104,20 +104,20 @@ functions and can conveniently replace them. There are a number of differences t
 
 ## Preformance 
 
-The extensive study of performance that has led to this code encountered 
-weird and unexpected results. On average, the prefix code implementation 
-provided here showed better performance than the LEB128 encoding provided 
-in the main package.
-
-The benchmark data used in the following graphic is provided in the data.txt
-file you will find in the docs directory. 
+The extensive study of performance comparing different implementation of 
+postfix and prefix encoding led to this code. Its performance is compared
+with the `binary.PutUvarint()` and `binary.Uvarint()` and presented in
+the following graphic. The data is made available in `docs/data.txt`.
 
 ![benchmarks](img/benchmarks.png)
 
-Encoding with the `PutUvarint()` function is faster for small values 
-because the function may be inlined. But even with inlining, it gets slower
-than the prefix encoding which is not inlined and requires that the slice is
-passed as a value stored on the stack. 
+The LEB128 encoding with `binary.PutUvarint()` for small values up to 
+14 significant bits is faster than the `varint.Encode()` function. This
+is because it is inlined due to the simplicity of the code. But 
+`varint.Decode()` is faster than `binary.Uvarint()`. 
 
-Decoding prefix encoded values is always faster than decoding `Uvarint`
-values since none are inlined.
+The following graphic shows the time required to encode and decode a
+`uint64` value. This clearly shows that `varint` is faster. Since a value
+is usually written once and read many times, it shows that prefix encoding
+is a more efficient encoding than LEB128. 
+

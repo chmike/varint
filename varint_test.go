@@ -73,3 +73,27 @@ func BenchmarkStdDecode(b *testing.B) {
 		})
 	}
 }
+
+func BenchmarkReadWrite(b *testing.B) {
+	for nBits := 7; nBits < 64; nBits += 7 {
+		var value uint64 = 0xAAAAAAAAAAAAAAAA >> (64 - nBits)
+		b.Run(fmt.Sprintf("bits=%d", nBits), func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				Encode(buf, value)
+				_, out = Decode(buf)
+			}
+		})
+	}
+}
+
+func BenchmarkStdReadWrite(b *testing.B) {
+	for nBits := 7; nBits < 64; nBits += 7 {
+		var value uint64 = 0xAAAAAAAAAAAAAAAA >> (64 - nBits)
+		b.Run(fmt.Sprintf("bits=%d", nBits), func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				binary.PutUvarint(buf, value)
+				_, out = binary.Uvarint(buf)
+			}
+		})
+	}
+}
