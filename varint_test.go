@@ -24,6 +24,16 @@ func TestVarInt(t *testing.T) {
 	}
 }
 
+func TestTruncated(t *testing.T) {
+	var buf []byte
+	if l := Encode(buf, 1234); l != 0 {
+		t.Fatalf("expected 0, got %d", l)
+	}
+	if l, v := Decode(buf); l != 0 || v != 0 {
+		t.Fatalf("expected 0 and 0, got %d and %d", l, v)
+	}
+}
+
 var out int
 var buf0 = make([]byte, 1024)
 var buf = buf0[:rand.Int()%1010]
