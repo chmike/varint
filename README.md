@@ -121,3 +121,4 @@ The following graphic shows the time required to encode and decode a
 is usually written once and read many times, it shows that prefix encoding
 is a more efficient encoding than LEB128. 
 
+![benchmark encode and decode](img/benchmarkEncodeAndDecode.png)
