@@ -122,3 +122,12 @@ is usually written once and read many times, it shows that prefix encoding
 is a more efficient encoding than LEB128. 
 
 ![benchmark encode and decode](img/benchmarkEncodeAndDecode.png)
+
+### Note of caution on the benchmark results
+
+The benchmark is advantaging the `chmike/varint` code due to branch prediction
+optimisation. Encoding a slice of uint64 values of different magnitude would
+mitigate this effect. A zipf distributed magnitude might be more realist. 
+
+Any other suggestion for a better benchmarking method is welcome in the issue
+section.
