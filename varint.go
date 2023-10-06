@@ -1,91 +1,103 @@
 package varint
 
+import "math/bits"
+
 // Encode v as a prefixed with 1 bits variable length integer into b.
 // Returns the number of bytes written or 0 if b is too small.
 // The encoded integer is at most 9 bytes long. This function doesn't
 // panic.
 func Encode(b []byte, v uint64) int {
+	if v < 0x80 && len(b) != 0 {
+		b[0] = byte(v)
+		return 1
+	}
+	return encodeSlow(b, v)
+}
+
+func encodeSlow(b []byte, v uint64) int {
 	switch {
-	case v < 0x80:
-		if len(b) != 0 {
-			b[0] = byte(v)
-			return 1
-		}
 	case v < 1<<14:
 		if len(b) >= 2 {
-			b[0] = byte(v>>8) | 0x80
-			b[1] = byte(v)
+			x := bits.ReverseBytes16(uint16(v) | 0x8000)
+			b[0] = byte(x)
+			b[1] = byte(x >> 8)
 			return 2
 		}
 	case v < 1<<21:
 		if len(b) >= 3 {
-			b[0] = byte(v>>16) | 0xC0
-			b[1] = byte(v >> 8)
-			b[2] = byte(v)
+			x := bits.ReverseBytes32(uint32(v)|0xC00000) >> 8
+			b[0] = byte(x)
+			b[1] = byte(x >> 8)
+			b[2] = byte(x >> 16)
 			return 3
 		}
 	case v < 1<<28:
 		if len(b) >= 4 {
-			w := uint32(v) | 0xE0000000
-			b[0] = byte(w >> 24)
-			b[1] = byte(w >> 16)
-			b[2] = byte(w >> 8)
-			b[3] = byte(w)
+			x := bits.ReverseBytes32(uint32(v) | 0xE0000000)
+			b[0] = byte(x)
+			b[1] = byte(x >> 8)
+			b[2] = byte(x >> 16)
+			b[3] = byte(x >> 24)
 			return 4
 		}
 	case v < 1<<35:
 		if len(b) >= 5 {
-			b[0] = byte(v>>32) | 0xF0
-			b[1] = byte(v >> 24)
-			b[2] = byte(v >> 16)
-			b[3] = byte(v >> 8)
-			b[4] = byte(v)
+			x := bits.ReverseBytes64(v|0xF000000000) >> 24
+			b[0] = byte(x)
+			b[1] = byte(x >> 8)
+			b[2] = byte(x >> 16)
+			b[3] = byte(x >> 24)
+			b[4] = byte(x >> 32)
 			return 5
 		}
 	case v < 1<<42:
 		if len(b) >= 6 {
-			b[0] = byte(v>>40) | 0xF8
-			b[1] = byte(v >> 32)
-			b[2] = byte(v >> 24)
-			b[3] = byte(v >> 16)
-			b[4] = byte(v >> 8)
-			b[5] = byte(v)
+			x := bits.ReverseBytes64(v|0xF80000000000) >> 16
+			b[0] = byte(x)
+			b[1] = byte(x >> 8)
+			b[2] = byte(x >> 16)
+			b[3] = byte(x >> 24)
+			b[4] = byte(x >> 32)
+			b[5] = byte(x >> 40)
 			return 6
 		}
 	case v < 1<<49:
 		if len(b) >= 7 {
-			b[0] = byte(v>>48) | 0xFC
-			b[1] = byte(v >> 40)
-			b[2] = byte(v >> 32)
-			b[3] = byte(v >> 24)
-			b[4] = byte(v >> 16)
-			b[5] = byte(v >> 8)
-			b[6] = byte(v)
+			x := bits.ReverseBytes64(v|0xFC000000000000) >> 8
+			b[0] = byte(x)
+			b[1] = byte(x >> 8)
+			b[2] = byte(x >> 16)
+			b[3] = byte(x >> 24)
+			b[4] = byte(x >> 32)
+			b[5] = byte(x >> 40)
+			b[6] = byte(x >> 48)
 			return 7
 		}
 	case v < 1<<56:
 		if len(b) >= 8 {
-			b[0] = 0xFE
-			b[1] = byte(v >> 48)
-			b[2] = byte(v >> 40)
-			b[3] = byte(v >> 32)
-			b[4] = byte(v >> 24)
-			b[5] = byte(v >> 16)
-			b[6] = byte(v >> 8)
-			b[7] = byte(v)
+			x := bits.ReverseBytes64(v | 0xFE00000000000000)
+			b[0] = byte(x)
+			b[1] = byte(x >> 8)
+			b[2] = byte(x >> 16)
+			b[3] = byte(x >> 24)
+			b[4] = byte(x >> 32)
+			b[5] = byte(x >> 40)
+			b[6] = byte(x >> 48)
+			b[7] = byte(x >> 56)
 			return 8
 		}
 	default:
 		if len(b) >= 9 {
+			x := bits.ReverseBytes64(v)
 			b[0] = 0xFF
-			b[1] = byte(v >> 56)
-			b[2] = byte(v >> 48)
-			b[3] = byte(v >> 40)
-			b[4] = byte(v >> 32)
-			b[5] = byte(v >> 24)
-			b[6] = byte(v >> 16)
-			b[7] = byte(v >> 8)
-			b[8] = byte(v)
+			b[1] = byte(x)
+			b[2] = byte(x >> 8)
+			b[3] = byte(x >> 16)
+			b[4] = byte(x >> 24)
+			b[5] = byte(x >> 32)
+			b[6] = byte(x >> 40)
+			b[7] = byte(x >> 48)
+			b[8] = byte(x >> 56)
 			return 9
 		}
 	}
