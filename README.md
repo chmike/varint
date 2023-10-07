@@ -111,10 +111,14 @@ the following graphic. The data is made available in `docs/data.txt`.
 
 ![benchmarks](img/benchmarks.png)
 
-The LEB128 encoding with `binary.PutUvarint()` for small values up to 
-14 significant bits is faster than the `varint.Encode()` function. This
-is because it is inlined due to the simplicity of the code. But 
-`varint.Decode()` is faster than `binary.Uvarint()`. 
+The LEB128 encoding with `binary.PutUvarint()` for values up to 35 bits 
+is as fast as `varint.Encode()` function. Encoding values smaller than
+128 is inlined. `varint.Decode()` of such values is slower than `Uvarint`
+because it is not inlined by the compiler. 
+
+For unknown reason the LEB128 encoding and decoding functions become
+significantly slower for values bigger than 35bits on my computer. I 
+don't know if it's due to the compiler or the CPU. 
 
 The following graphic shows the time required to encode and decode a
 `uint64` value. This clearly shows that `varint` is faster. Since a value
